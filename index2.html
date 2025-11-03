@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhập Chi Tiêu Nhanh</title>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 16px;
+            color: #222;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .date-picker {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .date-picker label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="date"] {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .input-group button {
+            padding: 10px 14px;
+            font-size: 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .input-group button:hover {
+            background: #1e40af;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-around;
+            margin: 10px 0 18px;
+        }
+
+        .category {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 10px;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .category:hover::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .category.active {
+            background: #e0e7ff;
+        }
+
+        .expense-list {
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .expense-item span {
+            font-size: 14px;
+        }
+
+        .see-more {
+            text-align: center;
+            margin-top: 8px;
+            color: #2563eb;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Nhập Chi Tiêu Nhanh</h2>
+
+        <!-- Ngày nhập -->
+        <div class="date-picker">
+            <label for="expense-date">Ngày:</label>
+            <input type="date" id="expense-date">
+        </div>
+
+        <!-- Ô nhập nhanh -->
+        <div class="input-group">
+            <input type="text" id="expense-name" placeholder="Tên khoản chi...">
+            <input type="number" id="expense-amount" placeholder="Số tiền...">
+            <button id="add-btn">+</button>
+        </div>
+
+        <!-- Nhóm phân loại -->
+        <div class="categories">
+            <div class="category" data-name="Ăn uống">🍜</div>
+            <div class="category" data-name="Cà phê">☕</div>
+            <div class="category" data-name="Đi lại">🛵</div>
+            <div class="category" data-name="Mua sắm">🛍️</div>
+            <div class="category" data-name="Khác">💸</div>
+        </div>
+
+        <!-- Danh sách chi tiêu -->
+        <div class="expense-list" id="expense-list">
+            <h4>Hôm nay</h4>
+            <div id="expense-items"></div>
+            <div class="see-more" id="see-more" style="display:none;">Xem thêm...</div>
+        </div>
+    </div>
+
+    <script>
+        const dateInput = document.getElementById("expense-date");
+        const expenseName = document.getElementById("expense-name");
+        const expenseAmount = document.getElementById("expense-amount");
+        const addBtn = document.getElementById("add-btn");
+        const expenseList = document.getElementById("expense-items");
+        const seeMore = document.getElementById("see-more");
+
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.value = today;
+
+        let expenses = [];
+
+        // chọn nhóm
+        let selectedCategory = null;
+        document.querySelectorAll(".category").forEach(el => {
+            el.addEventListener("click", () => {
+                document.querySelectorAll(".category").forEach(c => c.classList.remove("active"));
+                el.classList.add("active");
+                selectedCategory = el.getAttribute("data-name");
+            });
+        });
+
+        // thêm khoản chi
+        addBtn.addEventListener("click", () => {
+            const name = expenseName.value.trim();
+            const amount = expenseAmount.value.trim();
+
+            if (!name || !amount) return alert("Vui lòng nhập đầy đủ thông tin");
+
+            expenses.unshift({
+                name,
+                amount,
+                category: selectedCategory,
+                date: dateInput.value
+            });
+
+            expenseName.value = "";
+            expenseAmount.value = "";
+            selectedCategory = null;
+            document.querySelectorAll(".category").forEach(c => c.classList.remove("active"));
+
+            renderList();
+        });
+
+        function renderList() {
+            expenseList.innerHTML = "";
+            const visible = expenses.slice(0, 5);
+            visible.forEach(e => {
+                const div = document.createElement("div");
+                div.classList.add("expense-item");
+                div.innerHTML = `
+          <span>${e.category ? e.category + " - " : ""}${e.name}</span>
+          <span>${Number(e.amount).toLocaleString()}đ</span>
+        `;
+                expenseList.appendChild(div);
+            });
+
+            seeMore.style.display = expenses.length > 5 ? "block" : "none";
+        }
+
+        seeMore.addEventListener("click", () => {
+            expenseList.innerHTML = "";
+            expenses.forEach(e => {
+                const div = document.createElement("div");
+                div.classList.add("expense-item");
+                div.innerHTML = `
+          <span>${e.category ? e.category + " - " : ""}${e.name}</span>
+          <span>${Number(e.amount).toLocaleString()}đ</span>
+        `;
+                expenseList.appendChild(div);
+            });
+            seeMore.style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

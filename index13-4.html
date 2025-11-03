@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Olive Money — UI (S2, Mobile-first, Dark Mode)</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f6f6f3;
+            --card: #ffffff;
+            --border: #e0e0d6;
+            --olive: #6B705C;
+            --olive-acc: #8BA26A;
+            --text: #222222;
+            --muted: #6b6b6b;
+            --radius: 12px;
+            --input-radius: 10px;
+            --gap: 12px;
+            --maxw: 720px;
+            --shadow: rgba(16, 24, 32, 0.04);
+        }
+
+        /* Dark mode */
+        .dark {
+            --bg: #0f1720;
+            --card: #0b1220;
+            --border: #17202a;
+            --olive: #98b37a;
+            --olive-acc: #9fbf7f;
+            --text: #e8eef0;
+            --muted: #9aa6ad;
+            --shadow: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Base setup */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        /* Layout */
+        .app {
+            width: 100%;
+            max-width: var(--maxw);
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Header */
+        header.app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 6px 18px var(--shadow);
+        }
+
+        .title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Toggle / Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Card wrapper */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        /* Form layout */
+        .form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--gap);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Floating label (fixed for iPhone SE and dark mode) */
+        .field {
+            position: relative;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 26px 14px 8px;
+            /* label có chỗ, text nằm thấp */
+            border-radius: var(--input-radius);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.4;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .field input::placeholder {
+            color: var(--muted);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .field input:focus::placeholder {
+            opacity: 1;
+            /* hiện khi focus */
+        }
+
+        .field input:focus {
+            border-color: var(--olive-acc);
+            box-shadow: 0 0 0 6px rgba(139, 162, 106, 0.06);
+        }
+
+        /* Label position */
+        .field span {
+            position: absolute;
+            left: 14px;
+            top: 18px;
+            font-size: 14px;
+            color: var(--muted);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+        }
+
+        /* Floating up when active */
+        .field input:focus+span,
+        .field input:not(:placeholder-shown)+span {
+            top: 6px;
+            font-size: 12px;
+            color: var(--olive-acc);
+            background: var(--bg);
+            padding: 0 4px;
+        }
+
+        .dark .field input:focus+span,
+        .dark .field input:not(:placeholder-shown)+span {
+            background: var(--card);
+        }
+
+        /* Buttons */
+        .add-btn {
+            background: var(--olive-acc);
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+
+        .add-btn:hover {
+            background: var(--olive);
+        }
+
+        .add-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Chips */
+        .chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* History */
+        .history-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-title {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 250, 250, 1));
+        }
+
+        .dark .history-item {
+            background: linear-gradient(180deg, rgba(13, 18, 28, 0.6), rgba(10, 14, 22, 0.8));
+        }
+
+        .left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f2f6f0;
+            font-size: 18px;
+        }
+
+        .dark .icon {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .desc {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .amount {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .action-btn {
+            border: none;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .edit {
+            background: #fff3cd;
+            color: #7a5a00;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .delete {
+            background: #ffdfe0;
+            color: #7a1b1b;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .see-more {
+            margin-top: 6px;
+            border: none;
+            background: transparent;
+            color: var(--olive-acc);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width:420px) {
+            .icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .add-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width:900px) {
+            .main {
+                gap: 18px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app" id="appRoot">
+        <header class="app-header">
+            <div class="title">
+                <h1>Olive Money</h1>
+                <div class="subtitle">Sổ tay chi tiêu — Minimal fintech</div>
+            </div>
+
+            <div class="controls" aria-hidden="false">
+                <button class="toggle" id="darkToggle" title="Toggle dark mode" aria-pressed="false">
+                    🌙 <span style="font-size:13px;color:var(--muted)">Dark mode</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Input card -->
+            <section class="card" aria-labelledby="input-heading">
+                <h2 id="input-heading" style="margin:0 0 8px 0; font-size:15px">Nhập khoản chi</h2>
+                <form class="form" id="expenseForm" onsubmit="return false;">
+                    <label class="field">
+                        <input id="dateInput" type="date" placeholder="Chọn ngày..." aria-label="Ngày chi tiêu">
+                        <span>Ngày</span>
+                    </label>
+
+                    <label class="field">
+                        <input id="descInput" type="text" placeholder="Nhập mô tả..." aria-label="Mô tả chi tiêu">
+                        <span>Mô tả</span>
+                    </label>
+
+                    <div class="row" style="align-items:flex-end;">
+                        <label class="field" style="flex:1; margin:0;">
+                            <input id="amountInput" type="number" placeholder="Nhập số tiền..."
+                                aria-label="Số tiền chi tiêu">
+                            <span>Số tiền</span>
+                        </label>
+
+                        <div style="width:120px; display:flex; justify-content:flex-end;">
+                            <button id="addBtn" class="add-btn" aria-label="Thêm khoản">Thêm</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div style="margin-top:12px">
+                    <div style="font-size:13px;color:var(--muted); margin-bottom:8px">Danh mục nhanh</div>
+                    <div class="chips" role="list">
+                        <button class="chip" type="button">🍚 Ăn</button>
+                        <button class="chip" type="button">☕ Cafe</button>
+                        <button class="chip" type="button">🚌 Đi lại</button>
+                        <button class="chip" type="button">🏠 Nhà</button>
+                        <button class="chip" type="button">💡 Điện</button>
+                        <button class="chip" type="button">📱 ĐT</button>
+                        <button class="chip" type="button">⋯ Khác</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History card -->
+            <aside class="card" aria-labelledby="history-heading">
+                <h2 id="history-heading" style="margin:0 0 8px 0; font-size:15px">Lịch sử gần đây</h2>
+
+                <div class="history-wrap" id="historyWrap">
+                    <!-- Five demo items (H1: left description, right amount) -->
+                    <div class="history-item" data-id="1">
+                        <div class="left">
+                            <div class="icon">☕</div>
+                            <div class="meta">
+                                <div class="desc">Cà phê sáng</div>
+                                <div class="sub">03/10/2025</div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="amount">45.000 đ</div>
+                            <button class="action-btn edit" aria-label="Sửa">Sửa</button>
+                            <button class="action-btn delete" aria-label="Xóa">Xóa</button>
+                        </div>
+                    </div>
+
+                    <div class="history-item" data-id="2">
+                        <div class="left">
+                            <div class="icon">🍜</div>
+                            <div class="meta">
+                                <div class="desc">Bún bò</div>
+                                <div class="sub">03/10/2025</div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="amount">30.000 đ</div>
+                            <button class="action-btn edit">Sửa</button>
+                            <button class="action-btn delete">Xóa</button>
+                        </div>
+                    </div>
+
+                    <div class="history-item" data-id="3">
+                        <div class="left">
+                            <div class="icon">🅿️</div>
+                            <div class="meta">
+                                <div class="desc">Gửi xe</div>
+                                <div class="sub">02/10/2025</div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="amount">5.000 đ</div>
+                            <button class="action-btn edit">Sửa</button>
+                            <button class="action-btn delete">Xóa</button>
+                        </div>
+                    </div>
+
+                    <div class="history-item" data-id="4">
+                        <div class="left">
+                            <div class="icon">🧋</div>
+                            <div class="meta">
+                                <div class="desc">Trà đá</div>
+                                <div class="sub">02/10/2025</div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="amount">3.000 đ</div>
+                            <button class="action-btn edit">Sửa</button>
+                            <button class="action-btn delete">Xóa</button>
+                        </div>
+                    </div>
+
+                    <div class="history-item" data-id="5">
+                        <div class="left">
+                            <div class="icon">⛽</div>
+                            <div class="meta">
+                                <div class="desc">Xăng xe</div>
+                                <div class="sub">01/10/2025</div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="amount">70.000 đ</div>
+                            <button class="action-btn edit">Sửa</button>
+                            <button class="action-btn delete">Xóa</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="see-more" id="seeMore">Xem thêm →</button>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        // UI-only JS (no server persistence)
+        (function () {
+            const app = document.getElementById('appRoot');
+            const darkToggle = document.getElementById('darkToggle');
+            const addBtn = document.getElementById('addBtn');
+            const dateInput = document.getElementById('dateInput');
+            const descInput = document.getElementById('descInput');
+            const amountInput = document.getElementById('amountInput');
+            const historyWrap = document.getElementById('historyWrap');
+            const seeMore = document.getElementById('seeMore');
+
+            // Initialize dark mode from localStorage
+            const saved = localStorage.getItem('olive_dark_mode');
+            if (saved === '1') {
+                document.documentElement.classList.add('dark');
+                darkToggle.setAttribute('aria-pressed', 'true');
+            }
+
+            darkToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                darkToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                localStorage.setItem('olive_dark_mode', isDark ? '1' : '0');
+            });
+
+            // helper: format number to "45.000 đ"
+            function formatVND(n) {
+                const num = Number(n) || 0;
+                return num.toLocaleString('vi-VN') + ' đ';
+            }
+
+            // Add new item (UI-only). Keep only 5 items visible (most recent on top)
+            addBtn.addEventListener('click', () => {
+                const date = dateInput.value || new Date().toISOString().slice(0, 10);
+                const desc = (descInput.value || 'Mục mới').trim();
+                const amount = amountInput.value ? formatVND(amountInput.value) : '0 đ';
+
+                // build element
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+          <div class="left">
+            <div class="icon">📝</div>
+            <div class="meta">
+              <div class="desc">${escapeHtml(desc)}</div>
+              <div class="sub">${formatDateForDisplay(date)}</div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="amount">${amount}</div>
+            <button class="action-btn edit">Sửa</button>
+            <button class="action-btn delete">Xóa</button>
+          </div>
+        `;
+                // insert at top
+                historyWrap.insertBefore(item, historyWrap.firstChild);
+
+                // trim to 5 items
+                const items = historyWrap.querySelectorAll('.history-item');
+                if (items.length > 5) {
+                    items[items.length - 1].remove();
+                }
+
+                // clear inputs
+                descInput.value = '';
+                amountInput.value = '';
+            });
+
+            // handle edit/delete via event delegation
+            historyWrap.addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit');
+                const delBtn = e.target.closest('.delete');
+                const item = e.target.closest('.history-item');
+                if (!item) return;
+
+                if (editBtn) {
+                    const desc = item.querySelector('.desc').textContent;
+                    const amountText = item.querySelector('.amount').textContent.replace(/\D/g, '');
+                    const newDesc = prompt('Sửa mô tả (demo):', desc);
+                    if (newDesc !== null) {
+                        item.querySelector('.desc').textContent = newDesc.trim() || desc;
+                    }
+                } else if (delBtn) {
+                    if (confirm('Xác nhận xóa mục này (demo)?')) {
+                        item.remove();
+                    }
+                }
+            });
+
+            seeMore.addEventListener('click', () => {
+                alert('Chuyển tới trang lịch sử đầy đủ (demo).');
+            });
+
+            // chips quick fill
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    // remove emoji for suggestion
+                    descInput.value = chip.textContent.trim();
+                });
+            });
+
+            // helpers
+            function escapeHtml(str) {
+                return str.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#39;" }[m]));
+            }
+            function formatDateForDisplay(iso) {
+                // input 'YYYY-MM-DD' -> 'DD/MM/YYYY'
+                const parts = iso.split('-');
+                if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+                return iso;
+            }
+        })();
+    </script>
+</body>
+
+</html>

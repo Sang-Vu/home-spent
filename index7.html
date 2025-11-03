@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chi tiêu - Index7</title>
+    <style>
+        :root {
+            --bg-light: #fafafa;
+            --border: #ddd;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --primary: #4CAF50;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: var(--bg-light);
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* Ô nhập */
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #fff;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .input-row input:focus {
+            border-color: var(--primary);
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #43a047;
+        }
+
+        /* Khi màn hình nhỏ -> nút vuông */
+        @media (max-width: 400px) {
+            .add-btn {
+                border-radius: 10px;
+                width: 100%;
+                height: 42px;
+            }
+        }
+
+        /* Icon phân loại */
+        .category-icons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .category-icons button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px var(--shadow);
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s;
+        }
+
+        .category-icons button:hover {
+            background: #f3f3f3;
+            transform: scale(1.05);
+        }
+
+        /* Phần lịch sử */
+        .history-section {
+            margin-top: 25px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px var(--shadow);
+            padding: 15px;
+        }
+
+        .history-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .history-records .record {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 15px;
+        }
+
+        .history-total {
+            margin-top: 8px;
+            text-align: right;
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* Responsive tối ưu cho iPad & iPhone */
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            .input-row input,
+            .add-btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .input-row {
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Ô nhập -->
+        <div class="input-row">
+            <input type="date" id="dateInput">
+            <input type="text" id="descInput" placeholder="Khoản chi...">
+            <input type="number" id="amountInput" placeholder="Số tiền...">
+            <button class="add-btn" id="addBtn">+</button>
+        </div>
+
+        <!-- Icon phân loại -->
+        <div class="category-icons">
+            <button>🍚</button>
+            <button>☕</button>
+            <button>🚌</button>
+            <button>🎁</button>
+            <button>🏠</button>
+            <button>💡</button>
+            <button>📱</button>
+            <button id="moreBtn">⋯</button>
+        </div>
+
+        <!-- Lịch sử ghi chép -->
+        <div class="history-section" id="history">
+            <h3>Hôm nay</h3>
+            <div class="history-group">
+                <div class="history-item">
+                    <div class="history-date">07/10/2025</div>
+                    <div class="history-records">
+                        <div class="record">
+                            <span class="record-name">Cà phê sáng</span>
+                            <span class="record-amount">45.000đ</span>
+                        </div>
+                        <div class="record">
+                            <span class="record-name">Ăn trưa</span>
+                            <span class="record-amount">75.000đ</span>
+                        </div>
+                    </div>
+                    <div class="history-total">Tổng: <b>120.000đ</b></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const addBtn = document.getElementById("addBtn");
+        const dateInput = document.getElementById("dateInput");
+        const descInput = document.getElementById("descInput");
+        const amountInput = document.getElementById("amountInput");
+        const history = document.getElementById("history");
+
+        // Xử lý thêm khoản chi
+        addBtn.addEventListener("click", () => {
+            const date = dateInput.value || new Date().toISOString().split("T")[0];
+            const desc = descInput.value.trim();
+            const amount = amountInput.value.trim();
+
+            if (!desc || !amount) return alert("Vui lòng nhập đủ thông tin!");
+
+            const today = new Date().toLocaleDateString("vi-VN");
+            const newRecord = document.createElement("div");
+            newRecord.className = "record";
+            newRecord.innerHTML = `
+        <span class="record-name">${desc}</span>
+        <span class="record-amount">${Number(amount).toLocaleString()}đ</span>
+      `;
+
+            const recordContainer = history.querySelector(".history-records");
+            recordContainer.appendChild(newRecord);
+
+            // Cập nhật tổng tiền
+            const totalEl = history.querySelector(".history-total b");
+            const currentTotal = parseInt(totalEl.textContent.replace(/\D/g, "")) || 0;
+            const newTotal = currentTotal + parseInt(amount);
+            totalEl.textContent = newTotal.toLocaleString() + "đ";
+
+            // Reset
+            descInput.value = "";
+            amountInput.value = "";
+        });
+
+        // Mở rộng icon phân loại
+        document.getElementById("moreBtn").addEventListener("click", () => {
+            alert("Tính năng mở rộng sắp ra mắt 😊");
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chi tiêu - Olive Soft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f6f6f3;
+            --border: #d8d8d3;
+            --border-strong: #c8c8c2;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --primary: #6B705C;
+            /* Olive Soft */
+            --primary-light: #A5A58D;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg-light);
+            margin: 0;
+            padding: 1rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Ô nhập */
+        .input-row {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px var(--shadow);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-row input {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: #fbfbfb;
+        }
+
+        .input-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(107, 112, 92, 0.15);
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 21px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .add-btn:hover {
+            background: #5a5f4b;
+        }
+
+        /* Icon phân loại */
+        .category-icons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .category-icons button {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px var(--shadow);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .category-icons button:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .category-icons button span:first-child {
+            font-size: 24px;
+        }
+
+        .category-icons button span:last-child {
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* History */
+        .history-section {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 15px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .history-section h3 {
+            font-size: 16px;
+            margin: 0 0 10px;
+            color: var(--primary);
+        }
+
+        .record {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #f1f1ed;
+            margin-bottom: 6px;
+        }
+
+        .history-total {
+            text-align: right;
+            font-weight: 600;
+            margin-top: 8px;
+            color: var(--primary);
+        }
+
+        @media (min-width: 600px) {
+            .input-row {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .add-btn {
+                width: 60px;
+                height: 42px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-row">
+            <input type="date" id="dateInput">
+            <input type="text" id="descInput" placeholder="Khoản chi...">
+            <input type="number" id="amountInput" placeholder="Số tiền...">
+            <button class="add-btn" id="addBtn">+</button>
+        </div>
+
+        <div class="category-icons">
+            <button><span>🍚</span><span>Ăn</span></button>
+            <button><span>☕</span><span>Cafe</span></button>
+            <button><span>🚌</span><span>Đi lại</span></button>
+            <button><span>🎁</span><span>Quà</span></button>
+            <button><span>🏠</span><span>Nhà</span></button>
+            <button><span>💡</span><span>Điện</span></button>
+            <button><span>📱</span><span>ĐT</span></button>
+            <button id="moreBtn"><span>⋯</span><span>Thêm</span></button>
+        </div>
+
+        <div class="history-section" id="history">
+            <h3>Hôm nay</h3>
+            <div class="record"><span>Cà phê sáng</span><span>45.000đ</span></div>
+            <div class="record"><span>Ăn trưa</span><span>75.000đ</span></div>
+            <div class="history-total">Tổng: 120.000đ</div>
+        </div>
+    </div>
+    <script>
+        const addBtn = document.getElementById("addBtn");
+        const dateInput = document.getElementById("dateInput");
+        const descInput = document.getElementById("descInput");
+        const amountInput = document.getElementById("amountInput");
+        const history = document.getElementById("history");
+        addBtn.addEventListener("click", () => {
+            const desc = descInput.value.trim();
+            const amount = amountInput.value.trim();
+            if (!desc || !amount) return alert("Nhập đủ thông tin!");
+            const div = document.createElement("div");
+            div.className = "record";
+            div.innerHTML = `<span>${desc}</span><span>${Number(amount).toLocaleString()}đ</span>`;
+            history.insertBefore(div, history.querySelector(".history-total"));
+            const totalEl = history.querySelector(".history-total");
+            const current = parseInt(totalEl.textContent.replace(/\D/g, "")) || 0;
+            totalEl.textContent = "Tổng: " + (current + +amount).toLocaleString() + "đ";
+            descInput.value = ""; amountInput.value = "";
+        });
+    </script>
+</body>
+
+</html>
