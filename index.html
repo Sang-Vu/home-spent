@@ -23,14 +23,20 @@
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
 
     <title>Expense Tracker</title>
-  <script type="module" crossorigin src="/home-spent/assets/index-VPtPMZfA.js"></script>
-  <link rel="stylesheet" crossorigin href="/home-spent/assets/index-BsQjr7tG.css">
+  <script type="module" crossorigin src="/home-spent/assets/index-CWFPr96b.js"></script>
+  <link rel="stylesheet" crossorigin href="/home-spent/assets/index-I3C_5XUB.css">
 </head>
 
 <body>
 
     <div id="app">
         <div id="expenseForm" class="container">
+
+            <!-- Global conflict banner -->
+            <div id="conflictBanner" class="conflict-banner hidden">
+                ⚠ <span id="conflictBannerText"></span>
+            </div>
+
             <!-- Date -->
             <div class="date-bar">
                 <input type="date" id="expenseDate">
@@ -53,8 +59,44 @@
                 </div>
             </div>
 
+            <!-- Conflict resolution panel (shown instead of the form below
+                 when the currently viewed category has an unresolved conflict) -->
+            <div id="conflictPanel" class="conflict-panel hidden">
+                <div class="conflict-title">
+                    ⚠ Xung đột dữ liệu — <span id="conflictCategoryLabel"></span>
+                </div>
+
+                <div class="conflict-value-row">
+                    <span class="conflict-value-label">Gốc (lần đồng bộ trước):</span>
+                    <span id="conflictBaseValue"></span>
+                </div>
+
+                <label class="conflict-option">
+                    <input type="radio" name="conflictResolution" id="conflictOptionLocal">
+                    Giữ trên App: <span id="conflictLocalValue"></span>
+                </label>
+
+                <label class="conflict-option">
+                    <input type="radio" name="conflictResolution" id="conflictOptionRemote">
+                    Giữ trên Sheet: <span id="conflictRemoteValue"></span>
+                </label>
+
+                <label class="conflict-option">
+                    <input type="radio" name="conflictResolution" id="conflictOptionCustom">
+                    Tự nhập giá trị khác:
+                </label>
+
+                <input type="tel" id="conflictCustomAmount" placeholder="45+15" class="hidden">
+                <textarea id="conflictCustomNote" rows="2" placeholder="Ghi chú" spellcheck="false"
+                    class="hidden"></textarea>
+
+                <button id="resolveConflictBtn" class="save-btn" disabled>
+                    Giải quyết
+                </button>
+            </div>
+
             <!-- Form -->
-            <div class="form">
+            <div class="form" id="expenseFields">
 
                 <label for="amount">Amount</label>
 
